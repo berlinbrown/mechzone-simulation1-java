@@ -19,45 +19,34 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
  */
-package org.squirm.chem;
+package org.berlin.mechzone;
 
-import javax.swing.*;
-import java.awt.*;
+import org.apache.log4j.Logger;
 
-/**
- * Main wrapper frame around the application.
- */
-public class MainFrame extends JFrame {
+// SquirmReaction.java
 
-    public MainFrame() {
-        super();
+class SquirmReaction {
+
+    private static final Logger LOGGER = Logger.getLogger(SquirmReaction.class);
+    
+    public char us_type;
+    public int us_state;
+    public boolean current_bond;
+    public char them_type;
+    public int them_state;
+    public int future_us_state;
+    public boolean future_bond;
+    public int future_them_state;
+
+    public SquirmReaction(char us_type, int us_state, boolean current_bond, char them_type, int them_state,
+            int future_us_state, boolean future_bond, int future_them_state) {
+        this.us_type = us_type;
+        this.us_state = us_state;
+        this.current_bond = current_bond;
+        this.them_type = them_type;
+        this.them_state = them_state;
+        this.future_us_state = future_us_state;
+        this.future_bond = future_bond;
+        this.future_them_state = future_them_state;        
     }
-
-    /**
-     * Set up the main frame.
-     */
-    public void setup() {
-        this.setTitle("Squirm Artificial Chemistry");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setResizable(false);
-
-        this.setLocation(20, 20);
-        this.setPreferredSize(new Dimension(800, 600));
-        this.setFocusable(true);
-        this.setVisible(true);
-        this.resize(800, 600);
-
-        // Current object is main frame, add graphic jpanel to frame
-        final Squirm frame = new Squirm();
-        frame.setLayout(new GridLayout(0, 1));
-        this.add(frame);
-
-        frame.setLayout(new GridLayout(0, 1));
-        frame.setPreferredSize(new Dimension(800, 600));
-        frame.setVisible(true);
-
-        frame.init();
-        frame.start();
-    }
-
-}
+};
