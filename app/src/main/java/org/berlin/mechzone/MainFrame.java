@@ -22,6 +22,7 @@
 package org.berlin.mechzone;
 
 import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -40,28 +41,36 @@ public class MainFrame extends JFrame {
      */
     public void setup() {
         // Setup current frame
+        this.setLayout(new GridLayout(3, 1));
         this.setTitle("Squirm Artificial Chemistry");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
-        this.add(this.createMenuBar());
-
+        this.setJMenuBar(this.createMenuBar());
         this.setLocation(20, 20);
-        this.setPreferredSize(new Dimension(800, 600));
+        this.setPreferredSize(new Dimension(800, 900));
+
         this.setFocusable(true);
         this.setVisible(true);
-        this.resize(800, 600);
 
-        // Current object is main frame, add graphic jpanel to frame
-        final Squirm frame = new Squirm();
-        frame.setLayout(new GridLayout(0, 1));
-        this.add(frame);
+        // Current object is main graphicPanel, add graphic jpanel to graphicPanel
+        final Squirm graphicPanel = new Squirm();
+        graphicPanel.setLayout(new GridLayout(0, 1));
 
-        frame.setLayout(new GridLayout(0, 1));
-        frame.setPreferredSize(new Dimension(800, 600));
-        frame.setVisible(true);
+        graphicPanel.setPreferredSize(new Dimension(800, 600));
+        graphicPanel.setVisible(true);
 
-        frame.init();
-        frame.start();
+        // Add graphic panel and resize current frame
+        this.add(graphicPanel);
+
+        // Add scroll pane under graphic area
+        this.add(this.createMessageArea());
+
+        // Add status bar final
+        this.add(this.createStatusBar());
+
+        this.resize(800, 900);
+        graphicPanel.init();
+        graphicPanel.start();
     }
 
     /**
@@ -84,6 +93,30 @@ public class MainFrame extends JFrame {
         menu.add(menuItem);
 
         return menuBar;
+    }
+
+    /**
+     * Create read-only scrollabe message area as jlabel.
+     */
+    public JScrollPane createMessageArea() {
+        final JLabel messages = new JLabel();
+        final JScrollPane scrollMessageArea = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollMessageArea.setForeground(Color.black);
+        scrollMessageArea.setPreferredSize(new Dimension(800, 80));
+        messages.setText("Data...");
+        return scrollMessageArea;
+    }
+
+    public JPanel createStatusBar() {
+        final JPanel statusPanel = new JPanel();
+        statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        statusPanel.setPreferredSize(new Dimension(800, 16));
+        statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
+        JLabel statusLabel = new JLabel("Status");
+        statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        statusPanel.add(statusLabel);
+        return statusPanel;
     }
 
 }
