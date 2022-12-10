@@ -18,6 +18,8 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
+
+ based on artificial chemistry model
  */
 package org.berlin.mechzone;
 
@@ -37,16 +39,16 @@ import java.util.Vector;
  * Can retrieve its cell (if not empty) using cell_grid[x][y].getOccupant()
  * 
  */
-public class SquirmGrid {
+public class CellGrid {
 
     /** array of SquirmCellSlots that may or may not have SquirmCells in */
-    protected SquirmCellSlot cell_grid[][];
+    protected CellSlot cell_grid[][];
 
     /** the x and y size of the cell_grid array */
     protected int n_x, n_y;
 
     /** list of the SquirmCells that exist in the grid */
-    protected Vector<SquirmCell> cell_list;
+    protected Vector<SimulationCell> cell_list;
 
     /** a count of the time steps elapsed */
     private int count = 0;
@@ -82,7 +84,7 @@ public class SquirmGrid {
             return "";
 
         String msg = "";
-        SquirmCell cell = cell_grid[x][y].getOccupant();
+        SimulationCell cell = cell_grid[x][y].getOccupant();
         msg += cell.getStringType();
         msg += cell.getState();
         // msg+=" ("+cell.getTimeSinceLastReaction()+")";
@@ -92,18 +94,18 @@ public class SquirmGrid {
     /**
      * Public constructor initializes size of grid and creates a simple world
      */
-    public SquirmGrid(int x, int y) {
+    public CellGrid(int x, int y) {
         n_x = x;
         n_y = y;
 
         // initialize the 2D grid of slots
-        cell_grid = new SquirmCellSlot[n_x][n_y];
+        cell_grid = new CellSlot[n_x][n_y];
         int i, j;
         for (i = 0; i < n_x; i++)
             for (j = 0; j < n_y; j++)
-                cell_grid[i][j] = new SquirmCellSlot();
+                cell_grid[i][j] = new CellSlot();
 
-        cell_list = new Vector<SquirmCell>();
+        cell_list = new Vector<SimulationCell>();
         initSimple();
     }
 
@@ -112,8 +114,8 @@ public class SquirmGrid {
     /** straightforward drawing of the grid and its contents */
     public void draw(final Graphics g, float scale, boolean fast) {
         // ask all the cells to draw themselves
-        for (final Enumeration<SquirmCell> e = cell_list.elements(); e.hasMoreElements();)
-            ((SquirmCell) e.nextElement()).draw(g, scale, cell_grid, fast);
+        for (final Enumeration<SimulationCell> e = cell_list.elements(); e.hasMoreElements();)
+            ((SimulationCell) e.nextElement()).draw(g, scale, cell_grid, fast);
 
         // draw the time step counter on top
         g.drawString(String.valueOf(count), 10, 10);
@@ -126,13 +128,13 @@ public class SquirmGrid {
         // initialise an arbitrarily long string        
         // initialise a long string
         {
-            SquirmCell e = new SquirmCell(10, n_y / 2 + 0, 0, 8, cell_list, cell_grid);
-            SquirmCell a = new SquirmCell(10, n_y / 2 + 1, 2, 1, cell_list, cell_grid);
-            SquirmCell b = new SquirmCell(10, n_y / 2 + 2, 3, 1, cell_list, cell_grid);
-            SquirmCell c = new SquirmCell(10, n_y / 2 + 3, 4, 1, cell_list, cell_grid);
+            SimulationCell e = new SimulationCell(10, n_y / 2 + 0, 0, 8, cell_list, cell_grid);
+            SimulationCell a = new SimulationCell(10, n_y / 2 + 1, 2, 1, cell_list, cell_grid);
+            SimulationCell b = new SimulationCell(10, n_y / 2 + 2, 3, 1, cell_list, cell_grid);
+            SimulationCell c = new SimulationCell(10, n_y / 2 + 3, 4, 1, cell_list, cell_grid);
             // SquirmCell d = new
             // SquirmCell(10,n_y/2+4,5,1,cell_list,cell_grid);
-            SquirmCell f = new SquirmCell(10, n_y / 2 + 4, 1, 1, cell_list, cell_grid);
+            SimulationCell f = new SimulationCell(10, n_y / 2 + 4, 1, 1, cell_list, cell_grid);
             e.makeBondWith(a);
             a.makeBondWith(b);
             b.makeBondWith(c);
@@ -147,17 +149,17 @@ public class SquirmGrid {
             px = (int) Math.floor(Math.random() * (float) n_x);
             py = (int) Math.floor(Math.random() * (float) n_y);
             if (cell_grid[px][py].queryEmpty()) {
-                new SquirmCell(px, py, SquirmCellProperties.getRandomType(), 0, cell_list, cell_grid);
+                new SimulationCell(px, py, SimulationCellModel.getRandomType(), 0, cell_list, cell_grid);
             }
         }
         // just for now, add extra 'a' cells to help memebrane growth along        
     }
 
     /** give each cell a chance to move, in strict order */
-    public void doTimeStep(SquirmChemistry chemistry) {
-        SquirmCell cell;
-        for (final Enumeration<SquirmCell> e = cell_list.elements(); e.hasMoreElements();) {
-            cell = (SquirmCell) e.nextElement();
+    public void doTimeStep(CellChemistry chemistry) {
+        SimulationCell cell;
+        for (final Enumeration<SimulationCell> e = cell_list.elements(); e.hasMoreElements();) {
+            cell = (SimulationCell) e.nextElement();
             // ask the cell to make any reactions possible
             cell.makeReactions(chemistry, n_x, n_y, cell_grid);
             // ask the cell to move as it wishes
@@ -190,7 +192,7 @@ public class SquirmGrid {
             px = (int) Math.floor(Math.random() * (float) n_x / 2) + (on_right ? n_x / 2 : 0);
             py = (int) Math.floor(Math.random() * (float) n_y);
             if (cell_grid[px][py].queryEmpty()) {
-                new SquirmCell(px, py, SquirmCellProperties.getRandomType(), 0, cell_list, cell_grid);
+                new SimulationCell(px, py, SimulationCellModel.getRandomType(), 0, cell_list, cell_grid);
             }
         }
 

@@ -18,6 +18,8 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
+
+ based on artificial chemistry model
  */
 package org.berlin.mechzone;
 
@@ -25,9 +27,9 @@ import org.apache.log4j.Logger;
 
 // SquirmReaction.java
 
-class SquirmReaction {
+class Reaction {
 
-    private static final Logger LOGGER = Logger.getLogger(SquirmReaction.class);
+    private static final Logger LOGGER = Logger.getLogger(Reaction.class);
     
     public char us_type;
     public int us_state;
@@ -38,8 +40,8 @@ class SquirmReaction {
     public boolean future_bond;
     public int future_them_state;
 
-    public SquirmReaction(char us_type, int us_state, boolean current_bond, char them_type, int them_state,
-            int future_us_state, boolean future_bond, int future_them_state) {
+    public Reaction(char us_type, int us_state, boolean current_bond, char them_type, int them_state,
+                    int future_us_state, boolean future_bond, int future_them_state) {
         this.us_type = us_type;
         this.us_state = us_state;
         this.current_bond = current_bond;

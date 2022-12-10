@@ -18,6 +18,8 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
+
+ based on artificial chemistry model
  */
 package org.berlin.mechzone;
 
@@ -26,17 +28,17 @@ package org.berlin.mechzone;
 /**
  * Cell Slot.
  */
-public class SquirmCellSlot {
+public class CellSlot {
 
     protected boolean has_occupant;
-    protected SquirmCell occupant;
+    protected SimulationCell occupant;
 
     // Public constructor initializes size of grid
-    public SquirmCellSlot() {
+    public CellSlot() {
         has_occupant = false;
     }
 
-    public void makeOccupied(SquirmCell occ) {
+    public void makeOccupied(SimulationCell occ) {
         // !has_occupant is a necessary condition for calling this function
         if (has_occupant)
             throw new Error("SquirmCellSlot::makeOccupied : already occupied!");
@@ -53,7 +55,7 @@ public class SquirmCellSlot {
         return !has_occupant;
     }
 
-    public SquirmCell getOccupant() {
+    public SimulationCell getOccupant() {
         // has_occupant is a necessary condition for calling this function
         if (!has_occupant)
             throw new Error("SquirmCellSlot::getOccupant : no occupant!");

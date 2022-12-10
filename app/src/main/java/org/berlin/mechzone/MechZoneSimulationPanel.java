@@ -18,6 +18,8 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
+
+ based on artificial chemistry model
  */
 package org.berlin.mechzone;
 
@@ -30,20 +32,20 @@ import org.apache.log4j.Logger;
 /**
  * Main Class for JFrame Squirm Java Graphics Component.
  */
-public class Squirm extends JPanel implements Runnable {
+public class MechZoneSimulationPanel extends JPanel implements Runnable {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Logger LOGGER = Logger.getLogger(Squirm.class);
+    private static final Logger LOGGER = Logger.getLogger(MechZoneSimulationPanel.class);
 
     /**
      * THREAD SUPPORT: m_Squirm is the Thread object for the applet
      */
     private Thread m_Squirm = null;
 
-    protected SquirmGrid squirmGrid;
+    protected CellGrid squirmGrid;
 
-    private static SquirmChemistry chemistry;
+    private static CellChemistry chemistry;
 
     protected final int grid_size_x = 50;
     protected final int grid_size_y = 50;
@@ -75,10 +77,10 @@ public class Squirm extends JPanel implements Runnable {
     /**
      * Squirm Class Constructor
      */
-    public Squirm() {
+    public MechZoneSimulationPanel() {
         try {
-            squirmGrid = new SquirmGrid(grid_size_x, grid_size_y);
-            chemistry = new SquirmChemistry();
+            squirmGrid = new CellGrid(grid_size_x, grid_size_y);
+            chemistry = new CellChemistry();
         } catch (Error e) {
             error_thrown = true;
             error_msg = e.getMessage();
@@ -114,7 +116,7 @@ public class Squirm extends JPanel implements Runnable {
     public void addReaction(String us_type, int us_state, boolean current_bond, String them_type, int them_state,
                             int future_us_state, boolean future_bond, int future_them_state) {
 
-        final SquirmReaction r = new SquirmReaction(us_type.toCharArray()[0], us_state, current_bond,
+        final Reaction r = new Reaction(us_type.toCharArray()[0], us_state, current_bond,
                 them_type.toCharArray()[0], them_state, future_us_state, future_bond, future_them_state);
         chemistry.addReaction(r);
 
@@ -127,7 +129,7 @@ public class Squirm extends JPanel implements Runnable {
     }
 
     /**
-     * The init() method is called by the AWT when an applet is first loaded or
+     * The init method is called by the AWT when an applet is first loaded or
      * reloaded. Override this method to perform whatever initialization your
      * applet needs, such as initializing data structures, loading images or
      * fonts, creating frame windows, setting the layout manager, or adding UI

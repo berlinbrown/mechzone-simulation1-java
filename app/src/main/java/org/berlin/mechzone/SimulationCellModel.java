@@ -18,6 +18,8 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
+
+  based on artificial chemistry model
  */
 package org.berlin.mechzone;
 
@@ -25,7 +27,7 @@ package org.berlin.mechzone;
 
 import java.awt.Color;
 
-class SquirmCellProperties {
+class SimulationCellModel {
     
     private int type;
     private int state;
@@ -51,7 +53,7 @@ class SquirmCellProperties {
         return (int) Math.floor(Math.random() * MAX_STATES);
     }
 
-    public SquirmCellProperties(int t, int s) {
+    public SimulationCellModel(int t, int s) {
         if (t < 0 || t >= MAX_TYPES)
             throw new Error("SquirmCellProperties::SquirmCellProperties : type not in valid range");
 

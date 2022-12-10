@@ -18,10 +18,21 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
+
+ based on artificial chemistry model
  */
 package org.berlin.mechzone;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -32,6 +43,13 @@ import java.awt.event.KeyEvent;
  */
 public class MainFrame extends JFrame {
 
+    private static final int FRAME_WIDTH = 800;
+    private static final int FRAME_HEIGHT = 900;
+
+    private static final int GRAPHIC_HEIGHT = 600;
+
+    private static final int WIDTH_BUFFER = 30;
+
     public MainFrame() {
         super();
     }
@@ -41,23 +59,20 @@ public class MainFrame extends JFrame {
      */
     public void setup() {
         // Setup current frame
-        this.setLayout(new GridLayout(3, 1));
-        this.setTitle("Squirm Artificial Chemistry");
+        this.setTitle("Mech Simulation");
+        this.setLayout(new FlowLayout(FlowLayout.CENTER));
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setJMenuBar(this.createMenuBar());
         this.setLocation(20, 20);
-        this.setPreferredSize(new Dimension(800, 900));
+        this.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 
         this.setFocusable(true);
         this.setVisible(true);
 
         // Current object is main graphicPanel, add graphic jpanel to graphicPanel
-        final Squirm graphicPanel = new Squirm();
-        graphicPanel.setLayout(new GridLayout(0, 1));
-
-        graphicPanel.setPreferredSize(new Dimension(800, 600));
-        graphicPanel.setVisible(true);
+        final MechZoneSimulationPanel graphicPanel = this.simulation();
 
         // Add graphic panel and resize current frame
         this.add(graphicPanel);
@@ -68,9 +83,16 @@ public class MainFrame extends JFrame {
         // Add status bar final
         this.add(this.createStatusBar());
 
-        this.resize(800, 900);
+        this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         graphicPanel.init();
         graphicPanel.start();
+    }
+
+    public MechZoneSimulationPanel simulation() {
+        final MechZoneSimulationPanel graphicPanel = new MechZoneSimulationPanel();
+        graphicPanel.setPreferredSize(new Dimension(FRAME_WIDTH, GRAPHIC_HEIGHT));
+        graphicPanel.setVisible(true);
+        return graphicPanel;
     }
 
     /**
@@ -96,24 +118,26 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * Create read-only scrollabe message area as jlabel.
+     * Create read-only scrollable message area as jlabel.
      */
     public JScrollPane createMessageArea() {
         final JLabel messages = new JLabel();
         final JScrollPane scrollMessageArea = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollMessageArea.setForeground(Color.black);
-        scrollMessageArea.setPreferredSize(new Dimension(800, 80));
-        messages.setText("Data...");
+        scrollMessageArea.setPreferredSize(new Dimension(FRAME_WIDTH-WIDTH_BUFFER, 180));
+        messages.setText("Messages...");
+        messages.setHorizontalAlignment(SwingConstants.LEFT);
+        messages.setVerticalAlignment(SwingConstants.TOP);
         return scrollMessageArea;
     }
 
     public JPanel createStatusBar() {
         final JPanel statusPanel = new JPanel();
         statusPanel.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        statusPanel.setPreferredSize(new Dimension(800, 16));
+        statusPanel.setPreferredSize(new Dimension(FRAME_WIDTH-WIDTH_BUFFER, 20));
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.X_AXIS));
-        JLabel statusLabel = new JLabel("Status");
+        final JLabel statusLabel = new JLabel("Status");
         statusLabel.setHorizontalAlignment(SwingConstants.LEFT);
         statusPanel.add(statusLabel);
         return statusPanel;

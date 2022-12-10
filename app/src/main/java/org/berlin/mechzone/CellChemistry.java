@@ -18,6 +18,8 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
+
+ based on artificial chemistry model
  */
 package org.berlin.mechzone;
 
@@ -28,40 +30,40 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
-class SquirmChemistry {
+class CellChemistry {
 
-    private static final Logger LOGGER = Logger.getLogger(SquirmChemistry.class);
-    
-    private Vector<SquirmReaction> reactions;
+    private static final Logger LOGGER = Logger.getLogger(CellChemistry.class);
 
-    public SquirmChemistry() {
-        reactions = new Vector<SquirmReaction>();
+    private Vector<Reaction> reactions;
+
+    public CellChemistry() {
+        reactions = new Vector<Reaction>();
     }
 
     public void removeAllReactions() {
         reactions.removeAllElements();
     }
 
-    public void addReaction(final SquirmReaction r) {
+    public void addReaction(final Reaction r) {
         reactions.addElement(r);
     }
 
-    public void react(SquirmCellSlot cell_grid[][], SquirmCell cell, Vector<SquirmCell> neighbours) {
+    public void react(CellSlot cell_grid[][], SimulationCell cell, Vector<SimulationCell> neighbours) {
         // try all the reactions in turn
-        for (Enumeration<SquirmReaction> e = reactions.elements(); e.hasMoreElements();) {
-            tryReaction(cell_grid, cell, neighbours, (SquirmReaction) e.nextElement());
+        for (Enumeration<Reaction> e = reactions.elements(); e.hasMoreElements(); ) {
+            tryReaction(cell_grid, cell, neighbours, (Reaction) e.nextElement());
         }
     }
 
-    protected void tryReaction(SquirmCellSlot cell_grid[][], SquirmCell cell, Vector<SquirmCell> neighbours,
-            SquirmReaction r) {
+    protected void tryReaction(CellSlot cell_grid[][], SimulationCell cell, Vector<SimulationCell> neighbours,
+                               Reaction r) {
         tryReaction(cell_grid, cell, neighbours, r.us_type, r.us_state, r.current_bond, r.them_type, r.them_state,
                 r.future_us_state, r.future_bond, r.future_them_state);
     }
 
-    protected void tryReaction(final SquirmCellSlot cell_grid[][], SquirmCell cell, Vector<SquirmCell> neighbours,
-            char us_type, int us_state, boolean current_bond, char them_type, int them_state, int future_us_state,
-            boolean future_bond, int future_them_state) {
+    protected void tryReaction(final CellSlot cell_grid[][], SimulationCell cell, Vector<SimulationCell> neighbours,
+                               char us_type, int us_state, boolean current_bond, char them_type, int them_state, int future_us_state,
+                               boolean future_bond, int future_them_state) {
 
         // us_type is one of {e,f,a,b,c,d,x}
         if (us_type != 'e' && us_type != 'f' && us_type != 'a' && us_type != 'b' && us_type != 'c' && us_type != 'd'
@@ -81,22 +83,22 @@ class SquirmChemistry {
         if ((us_type != 'x' && cell.isTypeAndState(us_type, us_state)) || (us_type == 'x' && cell.isState(us_state))) {
             // do we have a neighbour (bonded/not) that is the right kind for
             // this reaction?
-            Vector<SquirmCell> search_from = current_bond ? cell.getBonds() : neighbours;
-            Vector<SquirmCell> ns;
+            Vector<SimulationCell> search_from = current_bond ? cell.getBonds() : neighbours;
+            Vector<SimulationCell> ns;
             // if them_type specified then search for it
             if (them_type != 'x' && them_type != 'y')
                 ns = getThoseOfTypeAndState(search_from, them_type, them_state);
-            // if unspecified but to be same as us_type then search for it
+                // if unspecified but to be same as us_type then search for it
             else if (them_type == 'x' && us_type == 'x')
                 ns = getThoseOfTypeAndState(search_from, cell.getType(), them_state);
-            // must be unspecified
+                // must be unspecified
             else if ((them_type == 'x' && us_type != 'x') || them_type == 'y')
                 ns = getThoseOfState(search_from, them_state);
             else
                 throw new Error("SquirmChemistry::tryReaction() : unexpected case statement");
             // try the reaction on each of the possibles
-            for (Enumeration<SquirmCell> e = ns.elements(); e.hasMoreElements();) {
-                SquirmCell n = (SquirmCell) e.nextElement();
+            for (Enumeration<SimulationCell> e = ns.elements(); e.hasMoreElements(); ) {
+                SimulationCell n = (SimulationCell) e.nextElement();
                 // reactions can happen if the two cells are right next to each
                 // other (share a face) or over a diagonal (share a corner) if
                 // the other diagonal
@@ -112,8 +114,8 @@ class SquirmChemistry {
                     else {
                         // otherwise, if there is no bond between diagonals then
                         // still OK
-                        SquirmCell cellA = cell_grid[cell.getX()][n.getY()].getOccupant();
-                        SquirmCell cellB = cell_grid[n.getX()][cell.getY()].getOccupant();
+                        SimulationCell cellA = cell_grid[cell.getX()][n.getY()].getOccupant();
+                        SimulationCell cellB = cell_grid[n.getX()][cell.getY()].getOccupant();
                         if (!cellA.getBonds().contains(cellB))
                             can_react = true;
                     }
@@ -125,7 +127,7 @@ class SquirmChemistry {
                         LOGGER.info("Breaking bond : UsType=" + us_type + " UsState=" + us_state + " ThemType=" + them_type + " ThemState=" + them_state);
                         cell.breakBondWith(n);
                     } else if (!current_bond && future_bond) {
-                        LOGGER.info("Making bond : UsType=" + us_type + " UsState=" + us_state + " ThemType=" + them_type + " ThemState=" + them_state);                                               
+                        LOGGER.info("Making bond : UsType=" + us_type + " UsState=" + us_state + " ThemType=" + them_type + " ThemState=" + them_state);
                         cell.makeBondWith(n);
                     }
                     // set our states to their new values
@@ -137,18 +139,18 @@ class SquirmChemistry {
         }
     }
 
-    protected Vector<SquirmCell> getThoseOfTypeAndState(Vector<SquirmCell> cells, char type, int state) {
-        return getThoseOfTypeAndState(cells, SquirmCellProperties.getType(type), state);
+    protected Vector<SimulationCell> getThoseOfTypeAndState(Vector<SimulationCell> cells, char type, int state) {
+        return getThoseOfTypeAndState(cells, SimulationCellModel.getType(type), state);
     }
 
-    protected Vector<SquirmCell> getThoseOfTypeAndState(Vector<SquirmCell> cells, int type, int state) {
+    protected Vector<SimulationCell> getThoseOfTypeAndState(Vector<SimulationCell> cells, int type, int state) {
         // do any of these cells match the type and state specified?
         // if so return all that match (empty list if none)
 
-        Vector<SquirmCell> v = new Vector<SquirmCell>();
-        SquirmCell c;
-        for (Enumeration<SquirmCell> enumx = cells.elements(); enumx.hasMoreElements();) {
-            c = ((SquirmCell) enumx.nextElement());
+        Vector<SimulationCell> v = new Vector<SimulationCell>();
+        SimulationCell c;
+        for (Enumeration<SimulationCell> enumx = cells.elements(); enumx.hasMoreElements(); ) {
+            c = ((SimulationCell) enumx.nextElement());
             if (type != -1) {
                 if (c.isTypeAndState(type, state))
                     v.addElement(c);
@@ -159,14 +161,14 @@ class SquirmChemistry {
         return v;
     }
 
-    protected Vector<SquirmCell> getThoseOfState(final Vector<SquirmCell> cells, int state) {
+    protected Vector<SimulationCell> getThoseOfState(final Vector<SimulationCell> cells, int state) {
         // do any of these cells match the state specified? (any type)
         // if so return all that match (empty list if none)
 
-        final Vector<SquirmCell> v = new Vector<SquirmCell>();
-        SquirmCell c;
-        for (Enumeration<SquirmCell> enumx = cells.elements(); enumx.hasMoreElements();) {
-            c = ((SquirmCell) enumx.nextElement());
+        final Vector<SimulationCell> v = new Vector<SimulationCell>();
+        SimulationCell c;
+        for (Enumeration<SimulationCell> enumx = cells.elements(); enumx.hasMoreElements(); ) {
+            c = ((SimulationCell) enumx.nextElement());
             if (c.isState(state)) {
                 v.addElement(c);
             }
@@ -175,7 +177,7 @@ class SquirmChemistry {
         return v;
     }
 
-    protected boolean rightNextToEachOther(SquirmCell cell1, SquirmCell cell2) {
+    protected boolean rightNextToEachOther(SimulationCell cell1, SimulationCell cell2) {
         return (Math.abs(cell1.getX() - cell2.getX()) + Math.abs(cell1.getY() - cell2.getY()) < 2);
     }
 
