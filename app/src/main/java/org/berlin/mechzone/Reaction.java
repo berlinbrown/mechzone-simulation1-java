@@ -19,7 +19,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 
- based on artificial chemistry model
+ based on artificial chemistry model- tim hutton
  */
 package org.berlin.mechzone;
 

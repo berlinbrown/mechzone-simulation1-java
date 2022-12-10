@@ -33,27 +33,36 @@ import java.util.Vector;
  * The SquirmGrid class manages a 2D grid of SquirmCellSlots and a list of
  * SquirmCells. By storing both structures we make great speed savings at the
  * expense of using extra memory.
- * 
+ * <p>
  * Can query for a cell slot being empty using cell_grid[x][y].queryEmpty()
- * 
+ * <p>
  * Can retrieve its cell (if not empty) using cell_grid[x][y].getOccupant()
- * 
  */
 public class CellGrid {
 
-    /** array of SquirmCellSlots that may or may not have SquirmCells in */
+    /**
+     * array of SquirmCellSlots that may or may not have SquirmCells in
+     */
     protected CellSlot cell_grid[][];
 
-    /** the x and y size of the cell_grid array */
+    /**
+     * the x and y size of the cell_grid array
+     */
     protected int n_x, n_y;
 
-    /** list of the SquirmCells that exist in the grid */
+    /**
+     * list of the SquirmCells that exist in the grid
+     */
     protected Vector<SimulationCell> cell_list;
 
-    /** a count of the time steps elapsed */
+    /**
+     * a count of the time steps elapsed
+     */
     private int count = 0;
 
-    /** which side should the cataclysm affect (alternates) */
+    /**
+     * which side should the cataclysm affect (alternates)
+     */
     private boolean on_right = true;
 
     private static final int N_CELLS = 500;
@@ -111,10 +120,12 @@ public class CellGrid {
 
     // ----------------------------------------------------------
 
-    /** straightforward drawing of the grid and its contents */
+    /**
+     * straightforward drawing of the grid and its contents
+     */
     public void draw(final Graphics g, float scale, boolean fast) {
         // ask all the cells to draw themselves
-        for (final Enumeration<SimulationCell> e = cell_list.elements(); e.hasMoreElements();)
+        for (final Enumeration<SimulationCell> e = cell_list.elements(); e.hasMoreElements(); )
             ((SimulationCell) e.nextElement()).draw(g, scale, cell_grid, fast);
 
         // draw the time step counter on top
@@ -123,7 +134,9 @@ public class CellGrid {
 
     // ----------------------------------------------------------
 
-    /** initialize some simple creatures */
+    /**
+     * initialize some simple creatures
+     */
     public void initSimple() {
         // initialise an arbitrarily long string        
         // initialise a long string
@@ -155,10 +168,12 @@ public class CellGrid {
         // just for now, add extra 'a' cells to help memebrane growth along        
     }
 
-    /** give each cell a chance to move, in strict order */
+    /**
+     * give each cell a chance to move, in strict order
+     */
     public void doTimeStep(CellChemistry chemistry) {
         SimulationCell cell;
-        for (final Enumeration<SimulationCell> e = cell_list.elements(); e.hasMoreElements();) {
+        for (final Enumeration<SimulationCell> e = cell_list.elements(); e.hasMoreElements(); ) {
             cell = (SimulationCell) e.nextElement();
             // ask the cell to make any reactions possible
             cell.makeReactions(chemistry, n_x, n_y, cell_grid);
@@ -174,7 +189,9 @@ public class CellGrid {
         }
     }
 
-    /** delete all cells in the right-hand half of the area and refresh */
+    /**
+     * delete all cells in the right-hand half of the area and refresh
+     */
     protected void doCataclysm() {
         // kill all cells on one side
         int x, y;
@@ -199,5 +216,5 @@ public class CellGrid {
         // do it to the other side next time...
         on_right = !on_right;
     }
-    
+
 } // End of the class //

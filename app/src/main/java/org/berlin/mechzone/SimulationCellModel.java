@@ -19,7 +19,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 
-  based on artificial chemistry model
+   based on artificial chemistry model- tim hutton
  */
 package org.berlin.mechzone;
 
@@ -56,11 +56,6 @@ class SimulationCellModel {
     public SimulationCellModel(int t, int s) {
         if (t < 0 || t >= MAX_TYPES)
             throw new Error("SquirmCellProperties::SquirmCellProperties : type not in valid range");
-
-        // if(s<0 || s>=MAX_STATES)
-        // throw new
-        // Error("SquirmCellProperties::SquirmCellProperties : state not in valid range");
-
         type = t;
         state = s;
     }
@@ -125,7 +120,6 @@ class SimulationCellModel {
             time_since_last_reaction = 0;
             state = s;
         }
-        // (else actually no change...)
     }
 
     public static int getType(char t) {
