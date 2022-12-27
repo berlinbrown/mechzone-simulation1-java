@@ -19,27 +19,24 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 
-   based on artificial chemistry model- tim hutton
  */
-package org.berlin.mechzone;
+package org.berlin.mechzone.game;
 
-// SquirmCellProperties.java
+import java.awt.*;
 
-import java.awt.Color;
+class EntityBase {
 
-class SimulationCellModel {
-    
-    private int type;
-    private int state;
-    protected int time_since_last_reaction = 0;
-    
-    private static final int MAX_TYPES = 6; // 0-5
-    private static final int MAX_STATES = 11; // this is controversial right now
+    private static final int MAX_TYPES = 6;
+    private static final int MAX_STATES = 11;
 
     protected static final int MAX_AGE = 1000;
 
-    private Color TYPE_COLOURS[] = { Color.red.brighter(), Color.green, Color.orange, Color.gray,
-            Color.cyan, Color.blue.brighter() };
+    private int type;
+    private int state;
+    protected int time_since_last_reaction = 0;
+
+    private Color TYPE_COLOURS[] = {Color.red.brighter(), Color.green, Color.orange, Color.gray,
+            Color.cyan, Color.blue.brighter()};
 
     public static int getRandomType() {
         return (int) Math.floor(Math.random() * MAX_TYPES);
@@ -53,9 +50,9 @@ class SimulationCellModel {
         return (int) Math.floor(Math.random() * MAX_STATES);
     }
 
-    public SimulationCellModel(int t, int s) {
+    public EntityBase(int t, int s) {
         if (t < 0 || t >= MAX_TYPES)
-            throw new Error("SquirmCellProperties::SquirmCellProperties : type not in valid range");
+            throw new Error("CellProperties : type not in valid range");
         type = t;
         state = s;
     }
@@ -74,26 +71,27 @@ class SimulationCellModel {
 
     public String getStringType() {
         switch (type) {
-        case 0:
-            return "e";
-        case 1:
-            return "f";
-        case 2:
-            return "a";
-        case 3:
-            return "b";
-        case 4:
-            return "c";
-        case 5:
-            return "d";
-        default:
-            throw new Error("SquirmCellProperties::getStringType : type out of range");
+            case 0:
+                return "e";
+            case 1:
+                return "f";
+            case 2:
+                return "a";
+            case 3:
+                return "b";
+            case 4:
+                return "c";
+            case 5:
+                return "d";
+            default:
+                throw new Error("getStringType : type out of range");
         }
     }
 
     public int getTimeSinceLastReaction() {
         return time_since_last_reaction;
     }
+
     public boolean isType(int t) {
         return type == t;
     }
@@ -124,25 +122,25 @@ class SimulationCellModel {
 
     public static int getType(char t) {
         switch (t) {
-        case 'e':
-            return 0;
-        case 'f':
-            return 1;
-        case 'a':
-            return 2;
-        case 'b':
-            return 3;
-        case 'c':
-            return 4;
-        case 'd':
-            return 5;
-        default:
-            throw new Error("SquirmCellProperties::getType : unknown type!");
+            case 'e':
+                return 0;
+            case 'f':
+                return 1;
+            case 'a':
+                return 2;
+            case 'b':
+                return 3;
+            case 'c':
+                return 4;
+            case 'd':
+                return 5;
+            default:
+                throw new Error("Properties::getType : unknown type!");
         }
     }
-    
+
     public String toString() {
-        return "[Super.SquirmCell : " + getStringType() + state + " / type=" + getStringType() + " state=" + state + "]"; 
+        return "[Super.Base : " + getStringType() + state + " / type=" + getStringType() + " state=" + state + "]";
     }
-    
+
 } // End of the class //

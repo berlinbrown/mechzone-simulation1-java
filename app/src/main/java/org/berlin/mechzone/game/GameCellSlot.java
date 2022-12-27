@@ -19,29 +19,28 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
 
- based on artificial chemistry model- tim hutton
  */
-package org.berlin.mechzone;
+package org.berlin.mechzone.game;
 
 // SquirmCellSlot.java
 
 /**
  * Cell Slot.
  */
-public class CellSlot {
+public class
+GameCellSlot {
 
     protected boolean has_occupant;
-    protected SimulationCell occupant;
+    protected Entity occupant;
 
     // Public constructor initializes size of grid
-    public CellSlot() {
+    public GameCellSlot() {
         has_occupant = false;
     }
 
-    public void makeOccupied(SimulationCell occ) {
-        // !has_occupant is a necessary condition for calling this function
+    public void makeOccupied(Entity occ) {
         if (has_occupant)
-            throw new Error("SquirmCellSlot::makeOccupied : already occupied!");
+            throw new Error("Cell: makeOccupied : already occupied!");
 
         has_occupant = true;
         occupant = occ;
@@ -55,11 +54,11 @@ public class CellSlot {
         return !has_occupant;
     }
 
-    public SimulationCell getOccupant() {
+    public Entity getOccupant() {
         // has_occupant is a necessary condition for calling this function
-        if (!has_occupant)
-            throw new Error("SquirmCellSlot::getOccupant : no occupant!");
-
+        if (!has_occupant) {
+            throw new Error("getOccupant : no occupant!");
+        }
         return occupant;
     }
 } // End of the Class //

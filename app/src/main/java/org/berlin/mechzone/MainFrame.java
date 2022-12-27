@@ -18,21 +18,12 @@
  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  SOFTWARE.
-
- based on artificial chemistry model
  */
 package org.berlin.mechzone;
 
-import javax.swing.BoxLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.SwingConstants;
+import org.berlin.mechzone.game.MechZoneSimulationPanel;
+
+import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -49,6 +40,8 @@ public class MainFrame extends JFrame {
     private static final int GRAPHIC_HEIGHT = 600;
 
     private static final int WIDTH_BUFFER = 30;
+
+    private final JTextArea messages = new JTextArea();
 
     public MainFrame() {
         super();
@@ -79,6 +72,8 @@ public class MainFrame extends JFrame {
 
         // Add scroll pane under graphic area
         this.add(this.createMessageArea());
+
+        graphicPanel.setTextArea(this.messages);
 
         // Add status bar final
         this.add(this.createStatusBar());
@@ -121,14 +116,12 @@ public class MainFrame extends JFrame {
      * Create read-only scrollable message area as jlabel.
      */
     public JScrollPane createMessageArea() {
-        final JLabel messages = new JLabel();
+        messages.setEditable(false);
         final JScrollPane scrollMessageArea = new JScrollPane(messages, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
                 JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollMessageArea.setForeground(Color.black);
         scrollMessageArea.setPreferredSize(new Dimension(FRAME_WIDTH-WIDTH_BUFFER, 180));
         messages.setText("Messages...");
-        messages.setHorizontalAlignment(SwingConstants.LEFT);
-        messages.setVerticalAlignment(SwingConstants.TOP);
         return scrollMessageArea;
     }
 
