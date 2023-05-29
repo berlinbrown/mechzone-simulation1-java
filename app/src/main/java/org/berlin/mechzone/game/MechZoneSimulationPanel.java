@@ -25,19 +25,19 @@ import org.apache.log4j.Logger;
 
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Event;
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.KeyListener;
+
+import java.awt.geom.Path2D;
 
 /**
  * Main Class for JFrame Squirm Java Graphics Component.
  */
 public class MechZoneSimulationPanel extends JPanel
-        implements Runnable, MouseListener {
+        implements Runnable, MouseListener, KeyListener {
 
     private static final long serialVersionUID = 1L;
     private static final Logger LOGGER = Logger.getLogger(MechZoneSimulationPanel.class);
@@ -75,6 +75,11 @@ public class MechZoneSimulationPanel extends JPanel
 
     public MechZoneSimulationPanel() {
         this.addMouseListener(this);
+        this.addKeyListener(this);
+        this.setFocusable(true);
+        //this.setFocusTraversalKeysEnabled(false);
+        this.requestFocusInWindow();
+
         try {
             gameGrid = new GameGraphicsGrid(gridSizeX, gridSizeY);
         } catch (Error e) {
@@ -116,11 +121,18 @@ public class MechZoneSimulationPanel extends JPanel
             // may need gjt.Util.waitForImage(this, offscreenImage);
             off_g = offscreenImage.getGraphics();
         }
+        this.addKeyListener(this);
+        this.setFocusable(true);
+        //this.setFocusTraversalKeysEnabled(false);
+        this.requestFocusInWindow();
 
     }
 
     public void destroy() {
     }
+
+    public int x = 20;
+    public int y = 20;
 
     /**
      * Squirm Paint Handler, set background, render cells
@@ -138,10 +150,22 @@ public class MechZoneSimulationPanel extends JPanel
 
         // draw grid after elements
         for (int i = 0; i < 40; i++) {
-            off_g.drawLine((i*10),0, (i*10), drawingSizeY);
+            off_g.drawLine((i * 10), 0, (i * 10), drawingSizeY);
 
-            off_g.drawLine(0,(i*10), drawingSizeX, (i*10));
+            off_g.drawLine(0, (i * 10), drawingSizeX, (i * 10));
         }
+
+        final Graphics2D g2 = (Graphics2D) off_g;
+
+        // Render player:
+        final Path2D myPath = new Path2D.Double();
+        double firstX = ((30 / 2.0) * (1 - 1 / Math.sqrt(3)));
+        double firstY = (3.0 * 30 / 4.0);
+        myPath.moveTo(firstX+x, firstY+y);
+        myPath.lineTo(30 - firstX+x, firstY+y);
+        myPath.lineTo(30 / 2.0+x, (30 / 4.0)+y);
+        myPath.closePath();
+        g2.fill(myPath);  // fill my triangle
 
         // Show the result.
         g.drawImage(offscreenImage, 0, 0, this);
@@ -196,11 +220,9 @@ public class MechZoneSimulationPanel extends JPanel
                     error_msg = e.getMessage();
                     error_thrown = true;
                 }
-
                 if (gameGrid.getCount() % draw_every == 0) {
                     repaint();
                 }
-
                 Thread.sleep(delay);
             } catch (final InterruptedException e) {
                 stop();
@@ -233,32 +255,61 @@ public class MechZoneSimulationPanel extends JPanel
         }
         textArea.append(eventDescription + " detected on "
                 + e.getComponent().getClass().getName()
-                + " "  + e.getX() + " " + e.getY()
+                + " " + e.getX() + " " + e.getY()
                 + "." + NEWLINE);
         textArea.setCaretPosition(textArea.getDocument().getLength());
     }
 
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(final MouseEvent e) {
         eventOutput("Mouse pressed (# of clicks: "
                 + e.getClickCount() + ")", e);
     }
 
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(final MouseEvent e) {
         eventOutput("Mouse released (# of clicks: "
                 + e.getClickCount() + ")", e);
     }
 
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(final MouseEvent e) {
         eventOutput("Mouse entered", e);
     }
 
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(final MouseEvent e) {
         eventOutput("Mouse exited", e);
     }
 
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(final MouseEvent e) {
         eventOutput("Mouse clicked (# of clicks: "
                 + e.getClickCount() + ")", e);
+    }
+
+    @Override
+    public void keyTyped(final KeyEvent ke) {
+        System.out.println(">>>> enter key");
+    }
+
+    @Override
+    public void keyPressed(final KeyEvent ke) {
+        final int c = ke.getKeyCode();
+        System.out.println(">>>> " + c);
+        if (c == KeyEvent.VK_LEFT) {
+            x -= 5;
+        }
+        if (c == KeyEvent.VK_RIGHT) {
+            x += 5;
+        }
+        if (c == KeyEvent.VK_UP) {
+            y -= 5;
+        }
+        if (c == KeyEvent.VK_DOWN) {
+            y += 5;
+        }
+        repaint();
+        System.out.println(">>>> " + x);
+    }
+
+    @Override
+    public void keyReleased(final KeyEvent ke) {
     }
 
 } // End of the class //
