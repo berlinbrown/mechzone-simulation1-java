@@ -87,11 +87,13 @@ public class GameGraphicsGrid {
         // initialize the 2D grid of slots
         cell_grid = new GameCellSlot[n_x][n_y];
         int i, j;
-        for (i = 0; i < n_x; i++)
-            for (j = 0; j < n_y; j++)
+        for (i = 0; i < n_x; i++) {
+            for (j = 0; j < n_y; j++) {
                 cell_grid[i][j] = new GameCellSlot();
+            }
+        }
 
-        cell_list = new Vector<Entity>();
+        cell_list = new Vector<>();
         initSimple();
     }
 
@@ -106,7 +108,9 @@ public class GameGraphicsGrid {
             ((Entity) e.nextElement()).draw(g, scale, cell_grid, fast);
         }
 
-        // draw the time step counter on top
+
+
+        // draw the time step counter on top (to the farthest to the front)
         g.drawString(String.valueOf(count), 10, 10);
     }
 

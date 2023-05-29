@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="squirmArtChem" />
+        <module name="mechzone" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="squirmArtChem" target="1.8" />
+      <module name="mechzone" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

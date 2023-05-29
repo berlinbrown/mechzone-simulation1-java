@@ -136,6 +136,13 @@ public class MechZoneSimulationPanel extends JPanel
         // Draw the cells
         gameGrid.draw(off_g, scale, delay <= FAST);
 
+        // draw grid after elements
+        for (int i = 0; i < 40; i++) {
+            off_g.drawLine((i*10),0, (i*10), drawingSizeY);
+
+            off_g.drawLine(0,(i*10), drawingSizeX, (i*10));
+        }
+
         // Show the result.
         g.drawImage(offscreenImage, 0, 0, this);
         counter++;
