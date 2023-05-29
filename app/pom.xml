@@ -113,7 +113,19 @@
                 <configuration>
                     <skipTests>true</skipTests>
                 </configuration>
-            </plugin>            
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>org.berlin.mechzone.Main</mainClass>
+                    <arguments>
+                        <argument>com.example.app.MainClass</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
+
         </plugins>
 
     </build>

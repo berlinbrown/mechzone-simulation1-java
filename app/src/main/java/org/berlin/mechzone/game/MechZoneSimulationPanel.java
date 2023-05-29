@@ -44,9 +44,9 @@ public class MechZoneSimulationPanel extends JPanel
 
     private static final String NEWLINE = System.getProperty("line.separator");
 
-    private Thread m_Squirm = null;
+    private Thread gameThread = null;
 
-    protected GameGraphicsGrid squirmGrid;
+    protected GameGraphicsGrid gameGrid;
 
     protected final int gridSizeX = 50;
     protected final int gridSizeY = 50;
@@ -76,7 +76,7 @@ public class MechZoneSimulationPanel extends JPanel
     public MechZoneSimulationPanel() {
         this.addMouseListener(this);
         try {
-            squirmGrid = new GameGraphicsGrid(gridSizeX, gridSizeY);
+            gameGrid = new GameGraphicsGrid(gridSizeX, gridSizeY);
         } catch (Error e) {
             error_thrown = true;
             error_msg = e.getMessage();
@@ -123,7 +123,7 @@ public class MechZoneSimulationPanel extends JPanel
     }
 
     /**
-     * Squirm Paint Handler
+     * Squirm Paint Handler, set background, render cells
      */
     public void paint(final Graphics g) {
         if (off_g == null) {
@@ -134,7 +134,7 @@ public class MechZoneSimulationPanel extends JPanel
         off_g.fillRect(0, 0, drawingSizeX, drawingSizeY);
 
         // Draw the cells
-        squirmGrid.draw(off_g, scale, delay <= FAST);
+        gameGrid.draw(off_g, scale, delay <= FAST);
 
         // Show the result.
         g.drawImage(offscreenImage, 0, 0, this);
@@ -158,9 +158,9 @@ public class MechZoneSimulationPanel extends JPanel
      * appears on the screen.
      */
     public void start() {
-        if (m_Squirm == null) {
-            m_Squirm = new Thread(this);
-            m_Squirm.start();
+        if (gameThread == null) {
+            gameThread = new Thread(this);
+            gameThread.start();
         }
     }
 
@@ -169,8 +169,8 @@ public class MechZoneSimulationPanel extends JPanel
      * longer on the screen.
      */
     public void stop() {
-        if (m_Squirm != null) {
-            m_Squirm = null;
+        if (gameThread != null) {
+            gameThread = null;
         }
     }
 
@@ -183,14 +183,14 @@ public class MechZoneSimulationPanel extends JPanel
             try {
                 try {
                     if (!paused) {
-                        squirmGrid.doTimeStep();
+                        gameGrid.doTimeStep();
                     }
                 } catch (Error e) {
                     error_msg = e.getMessage();
                     error_thrown = true;
                 }
 
-                if (squirmGrid.getCount() % draw_every == 0) {
+                if (gameGrid.getCount() % draw_every == 0) {
                     repaint();
                 }
 
@@ -214,7 +214,7 @@ public class MechZoneSimulationPanel extends JPanel
         // find which slot we're pointing at
         int slot_x = (int) ((float) x / scale);
         int slot_y = (int) ((float) y / scale);
-        inspect_msg = squirmGrid.getContents(slot_x, slot_y);
+        inspect_msg = gameGrid.getContents(slot_x, slot_y);
         inspect_msg_x = x;
         inspect_msg_y = y - 3;
         return true;

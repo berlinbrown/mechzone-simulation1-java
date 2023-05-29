@@ -65,8 +65,9 @@ public class GameGraphicsGrid {
             return "";
 
         // check cell slot not empty
-        if (cell_grid[x][y].queryEmpty())
+        if (cell_grid[x][y].queryEmpty()) {
             return "";
+        }
 
         String msg = "";
         Entity cell = cell_grid[x][y].getOccupant();
